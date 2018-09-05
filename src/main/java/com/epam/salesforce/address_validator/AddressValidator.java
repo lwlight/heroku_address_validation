@@ -26,7 +26,7 @@ import java.sql.Statement;
 @SpringBootApplication
 public class AddressValidator {
 
-    private static final String INSERT_ADDRESS = "INSERT INTO Rejected_Address ('address') VALUES ('reject')";
+    private static final String INSERT_ADDRESS = "INSERT INTO Rejected_Address (address) VALUES ('reject')";
 
     @Value("${spring.datasource.url}")
     private String dbUrl;
@@ -56,14 +56,17 @@ public class AddressValidator {
             Statement statement = connection.createStatement();
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS Rejected_Address (address varchar(50))");
             System.out.println("LINE 58: BEFORE ERROR");
-            statement.executeUpdate(INSERT_ADDRESS);
+//            statement.executeUpdate(INSERT_ADDRESS);
 //            statement.executeUpdate("INSERT INTO Rejected_Address (address) VALUES (reject)");
-            ResultSet rs = statement.executeQuery("SELECT address FROM Rejected_Address WHERE address = " + address);
-
-            if (rs.next()){
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-            } else {
-                return new ResponseEntity<>(HttpStatus.OK);
+            ResultSet rs = statement.executeQuery("SELECT address FROM Rejected_Address");
+//
+//            if (rs.next()){
+//                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+//            } else {
+//                return new ResponseEntity<>(HttpStatus.OK);
+//            }
+            while (rs.next()){
+                System.out.println(rs.getString("address"));
             }
 
 
