@@ -60,7 +60,7 @@ public class AddressValidator {
             Statement statement = connection.createStatement();
 //            statement.executeUpdate("CREATE TABLE IF NOT EXISTS Rejected_Address (address varchar(50))");
 
-            ResultSet resultSet = statement.executeQuery("SELECT address FROM Rejected_Address WHERE address=" + address);
+            ResultSet resultSet = statement.executeQuery("SELECT address FROM Rejected_Address WHERE address='" + address + "'");
             if (resultSet.next()){
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             } else {
