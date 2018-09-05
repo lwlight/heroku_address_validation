@@ -1,0 +1,5 @@
+{
+  "name": "Pizza Force address validation service",
+  "description": "A simple REST web service which determinate if inserted address allowed for new order",
+  "addons": [ "heroku-postgresql" ]
+}
