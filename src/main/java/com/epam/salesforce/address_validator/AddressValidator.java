@@ -26,7 +26,7 @@ import java.sql.Statement;
 @SpringBootApplication
 public class AddressValidator {
 
-    private static final String INSERT_ADDRESS = "INSERT INTO Rejected_Address (address) VALUES ('reject')";
+    private static final String INSERT_ADDRESS = "INSERT INTO Rejected_Address ('address') VALUES ('reject')";
 
     @Value("${spring.datasource.url}")
     private String dbUrl;
