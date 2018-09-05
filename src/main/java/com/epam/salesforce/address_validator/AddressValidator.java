@@ -1,5 +1,6 @@
 package com.epam.salesforce.address_validator;
 
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +16,16 @@ import java.util.Set;
 @RequestMapping("/")
 @SpringBootApplication
 public class AddressValidator {
-    
+
     private static final Set<String> restrictedAddresses = new HashSet<>(3);
     static{
         restrictedAddresses.add("reject");
         restrictedAddresses.add("badAddress");
         restrictedAddresses.add("stop");
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(AddressValidator.class, args);
     }
 
     @RequestMapping(value = "/{address}", method = RequestMethod.GET)
