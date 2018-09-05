@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,9 +36,18 @@ public class AddressValidator {
         SpringApplication.run(AddressValidator.class, args);
     }
 
-    @RequestMapping(value = "/{address}", method = RequestMethod.GET)
-    ResponseEntity<String> address(@PathParam("address") String address){
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    ResponseEntity<String> intro(){
+        return new ResponseEntity<String>("Hello there", HttpStatus.OK);
+    }
 
+    @RequestMapping(value = "/{address}", method = RequestMethod.GET)
+    ResponseEntity<String> address(@PathVariable String address){
+/*        if ("reject".equals(address)){
+            return new ResponseEntity<String>(HttpStatus.FORBIDDEN);
+        } else {
+            return new ResponseEntity<String>(HttpStatus.OK);
+        }*/
         try (Connection connection = dataSource.getConnection()) {
             Statement statement = connection.createStatement();
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS Rejected_Address (address varchar(50))");
@@ -49,6 +59,9 @@ public class AddressValidator {
             } else {
                 return new ResponseEntity<String>(HttpStatus.OK);
             }
+
+
+
 
         } catch (Exception e) {
             e.printStackTrace();

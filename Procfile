@@ -1,1 +1,1 @@
-web: java -jar target/address-validation-service.jar
+web: java -jar target/pizza-force-address-validation-service-1.0-SNAPSHOT.jar
