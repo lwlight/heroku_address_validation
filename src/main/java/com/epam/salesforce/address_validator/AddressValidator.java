@@ -28,6 +28,8 @@ import java.util.Set;
 @SpringBootApplication
 public class AddressValidator {
 
+    private static final String TABLE_NAME = "Rejected_Address";
+
     @Value("${spring.datasource.url}")
     private String dbUrl;
 
@@ -52,19 +54,38 @@ public class AddressValidator {
         } else {
             return new ResponseEntity<>(HttpStatus.OK);
         }
-    }*/
+    }
+    */
+
     @RequestMapping(value = "/{address}", method = RequestMethod.GET)
-    ResponseEntity<String> address(@PathVariable String address){
+    ResponseEntity<String> isRejected(@PathVariable String address){
         System.out.println("DB URL :: " + dbUrl);
-        try(Connection connection = dataSource.getConnection();){
+        try(Connection connection = dataSource.getConnection()){
             Statement statement = connection.createStatement();
 //            statement.executeUpdate("CREATE TABLE IF NOT EXISTS Rejected_Address (address varchar(50))");
 
-            ResultSet resultSet = statement.executeQuery("SELECT address FROM Rejected_Address WHERE address='" + address + "'");
+            ResultSet resultSet = statement.executeQuery("SELECT address FROM " + TABLE_NAME + " WHERE address='" + address + "'");
             if (resultSet.next()){
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             } else {
                 return new ResponseEntity<>(HttpStatus.OK);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
+    }
+
+    @RequestMapping(value = "/{address}", method = RequestMethod.POST)
+    ResponseEntity<String> addRejected(@PathVariable String address){
+        try(Connection connection = dataSource.getConnection()){
+            Statement statement = connection.createStatement();
+            int inserted = statement.executeUpdate("INSERT INTO " + TABLE_NAME + " VALUES ('" + address + "')");
+            if (inserted != 0){
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
         } catch (SQLException e) {
@@ -79,10 +100,15 @@ public class AddressValidator {
         System.out.println("DB URL in dataSource :: " + dbUrl);
         if (dbUrl == null || dbUrl.isEmpty()) {
             return new HikariDataSource();
-        } else {
-            HikariConfig config = new HikariConfig();
-            config.setJdbcUrl(dbUrl);
-            return new HikariDataSource(config);
         }
+
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(dbUrl);
+        HikariDataSource hikariDataSource = new HikariDataSource(config);
+        try(Connection connection = hikariDataSource.getConnection()){
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (address varchar(50))");
+        }
+        return hikariDataSource;
     }
 }
