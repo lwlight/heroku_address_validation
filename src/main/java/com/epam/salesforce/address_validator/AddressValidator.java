@@ -50,10 +50,12 @@ public class AddressValidator {
         } else {
             return new ResponseEntity<String>(HttpStatus.OK);
         }*/
+        System.out.println(INSERT_ADDRESS);
         try (Connection connection = dataSource.getConnection()) {
-            
+
             Statement statement = connection.createStatement();
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS Rejected_Address (address varchar(50))");
+            System.out.println("LINE 58: BEFORE ERROR");
             statement.executeUpdate(INSERT_ADDRESS);
 //            statement.executeUpdate("INSERT INTO Rejected_Address (address) VALUES (reject)");
             ResultSet rs = statement.executeQuery("SELECT address FROM Rejected_Address WHERE address = " + address);
