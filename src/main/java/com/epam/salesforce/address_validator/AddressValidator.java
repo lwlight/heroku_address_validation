@@ -52,7 +52,7 @@ public class AddressValidator {
             Statement statement = connection.createStatement();
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS Rejected_Address (address varchar(50))");
             statement.executeUpdate("INSERT INTO Rejected_Address VALUES ('reject')");
-            ResultSet rs = statement.executeQuery("SELECT address FROM Rejected_Address WHERE address =:address");
+            ResultSet rs = statement.executeQuery("SELECT address FROM Rejected_Address WHERE address = " + address);
 
             if (rs.next()){
                 return new ResponseEntity<String>(HttpStatus.FORBIDDEN);
